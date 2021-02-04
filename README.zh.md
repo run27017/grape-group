@@ -67,8 +67,8 @@ status 200, '返回文章数据' do
 end
 
 status 400, '请求参数有误' do
-  expose :code, desc: '错误码'
-  expose :message, desc: '错误消息'
+  expose :code, documentation: { desc: '错误码' }
+  expose :message, documentation: { desc: '错误消息' }
 end
 
 success '请求成功' do
@@ -76,8 +76,8 @@ success '请求成功' do
 end
 
 fail '请求失败' do
-  expose :code, desc: '错误码'
-  expose :message, desc: '错误消息'
+  expose :code, documentation: { desc: '错误码' }
+  expose :message, documentation: { desc: '错误消息' }
 end
 
 entity do
@@ -112,7 +112,7 @@ end
 ```ruby
 params do
   requires :article, type: Hash do
-    optional :all, using: Entities::Article.to_params
+    requires :some, using: Entities::Article.to_params
   end
 end
 ```
@@ -134,7 +134,28 @@ end
 3. 合理处理了 `is_array`：
 
    ```ruby
-   expose :bar, documentation: { type: String, is_array: true }
+   expose :foo, documentation: { type: String, is_array: true }
+   ```
+
+4. 声明 `required`：
+
+   ```ruby
+   expose :foo, documentation: { required: true }
+   ```
+
+5. `Entity` 中使用 `scope` 声明是参数还是返回值：
+
+   ```ruby
+   # 仅是参数
+   expose :foo, documentation: { scope: :param }
+   
+   # 仅是返回值
+   expose :bar, documentation: { scope: :entity }
+   expose :bar, documentation: { param: false }
+   
+   # 既是参数也是返回值
+   expose :car, documentation: { scope: [:param, :entity]}
+   expose :car, documentation: {}
    ```
 
 ### 针对测试的改进

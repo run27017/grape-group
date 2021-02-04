@@ -66,17 +66,17 @@ status 200,'Return article data' do
 end
 
 status 400,'The request parameter is wrong' do
-  expose :code, desc: 'error code'
-  expose :message, desc: 'error message'
+  expose :code, documentation: { desc: 'error code' }
+  expose :message, documentation: { desc: 'error message' }
 end
 
-success'Request is successful' do
+success 'Request is successful' do
   expose :article, using: Entities::Article
 end
 
-fail'Request failed' do
-  expose :code, desc: 'error code'
-  expose :message, desc: 'error message'
+fail 'Request failed' do
+  expose :code, documentation: { desc: 'error code' }
+  expose :message, documentation: { desc: 'error message' }
 end
 
 entity do
@@ -111,7 +111,7 @@ It adds a new method `to_params` in `Grape::Entity`, allowing you to reuse it in
 ```ruby
 params do
   requires :article, type: Hash do
-    optional :all, using: Entities::Article.to_params
+    optional :some, using: Entities::Article.to_params
   end
 end
 ```
@@ -134,6 +134,27 @@ It is better than `Grape::Entity.documentation`, with the following improvements
 
    ```ruby
    expose :bar, documentation: { type: String, is_array: true }
+   ```
+
+4. Declare `required`:
+
+   ```ruby
+   expose :foo, documentation: { required: true }
+   ```
+
+5. use `scope` to define it is only a param or response value:
+
+   ```ruby
+   # Only param
+   expose :foo, documentation: { scope: :param }
+   
+   # Only response value
+   expose :bar, documentation: { scope: :entity }
+   expose :bar, documentation: { param: false }
+   
+   # Both param and response value
+   expose :car, documentation: { scope: [:param, :entity]}
+   expose :car, documentation: {}
    ```
 
 ### Improvements for testing
